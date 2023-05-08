@@ -5,7 +5,7 @@ using UnityEngine;
 public class Health : MonoBehaviour
 {
     public int maxHealth = 5;
-    private int currentHealth;
+    public int currentHealth;
     public float knockbackForce = 10f;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
