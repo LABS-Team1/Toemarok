@@ -21,11 +21,14 @@ public class Health : MonoBehaviour
     public void TakeDamage(int damageAmount)
     {
         currentHealth -= damageAmount;
+        UIManager.Instance.ShowUIPrefab("BossHP_Bar");
+        UIManager.Instance.FindUIComponent<StatBar>("BossHP_Bar").DecreaseStat(currentHealth, maxHealth);
 
         Debug.Log(gameObject.name + " takes " + damageAmount + " damage. Remaining health: " + currentHealth);
 
         if (currentHealth <= 0) {
             Die();
+            UIManager.Instance.HideUIPrefab("BossHP_Bar");
         }
         else {
             MoveBack();
