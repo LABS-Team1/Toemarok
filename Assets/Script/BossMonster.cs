@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
-public class BossMonster : MonoBehaviour
+public class BossMonster : MonoBehaviour, IObserver
 {
     // phase 1: 이순신, phase 2: 이순신+거북선
     public int phase = 1;
@@ -12,17 +12,19 @@ public class BossMonster : MonoBehaviour
     public float attackCooldown;
     public float remainingAttackCooldown;
 
-    public GameObject player;
     public GameObject arrow;
     public Sprite boss2;
 
     private Health health;
     private SpriteRenderer spriteRenderer;
-    
+    private Monster monster;
+
     private void Start()
     {
-        health = GetComponent<Health>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        monster = GetComponent<Monster>();
+        health = GetComponent<Health>();
+        health.ResisterObserver(this);
         remainingAttackCooldown = attackCooldown;
         StartCoroutine(AttackCoroutine());
     }
@@ -33,7 +35,7 @@ public class BossMonster : MonoBehaviour
         {
             if (attacking == false)
             {
-                if (remainingAttackCooldown <= 0)
+                if (monster && monster.IsTargetDetected() && remainingAttackCooldown <= 0)
                 {
                     attacking = true;
                     remainingAttackCooldown = attackCooldown;
@@ -41,14 +43,6 @@ public class BossMonster : MonoBehaviour
                 }
 
                 remainingAttackCooldown = Mathf.Max(remainingAttackCooldown - Time.smoothDeltaTime, 0);
-            }
-            
-            if (health.currentHealth <= 5)
-            {
-                phase = 2;
-                health.maxHealth = 20;
-                health.currentHealth = 20;
-                spriteRenderer.sprite = boss2;
             }
             
             yield return null;
@@ -71,7 +65,7 @@ public class BossMonster : MonoBehaviour
 
     private IEnumerator ArrowAttack1Coroutine()
     {
-        Vector3 direction = player.transform.position - transform.position;
+        Vector3 direction = monster.GetTarget().transform.position - transform.position;
         SpawnArrow(direction);
 
         Vector3 leftDirection = Quaternion.AngleAxis(30, Vector3.forward) * direction;
@@ -87,15 +81,15 @@ public class BossMonster : MonoBehaviour
 
     private IEnumerator ArrowAttack2Coroutine()
     {
-        Vector3 direction = player.transform.position - transform.position;
+        Vector3 direction = monster.GetTarget().transform.position - transform.position;
         SpawnArrow(direction);
         yield return new WaitForSeconds(0.5f);
 
-        direction = player.transform.position - transform.position;
+        direction = monster.GetTarget().transform.position - transform.position;
         SpawnArrow(direction);
         yield return new WaitForSeconds(0.5f);
 
-        direction = player.transform.position - transform.position;
+        direction = monster.GetTarget().transform.position - transform.position;
         SpawnArrow(direction);
 
         attacking = false;
@@ -103,7 +97,7 @@ public class BossMonster : MonoBehaviour
 
     private IEnumerator ArrowAttack3Coroutine()
     {
-        Vector3 direction = player.transform.position - transform.position;
+        Vector3 direction = monster.GetTarget().transform.position - transform.position;
 
         for (int i = 0; i < 8; i++)
         {
@@ -124,12 +118,24 @@ public class BossMonster : MonoBehaviour
         float angle = GetAngle(Vector3.zero, direction);
         GameObject obj = Instantiate(arrow, transform.position, Quaternion.identity);
         obj.transform.GetChild(0).Rotate((new Vector3(0, 0, angle - 90)));
-        obj.GetComponent<Arrow>().direction = direction; 
+        obj.GetComponent<Arrow>().direction = direction;
+        obj.GetComponent<Arrow>().SpawnPosition = transform.position;
     }
 
     private float GetAngle(Vector3 start, Vector3 end)
     {
         Vector3 vector = end - start;
         return Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg;
+    }
+
+    public void GetNotified()
+    {
+        if (phase == 1 && health.currentHealth <= 5)
+        {
+            phase = 2;
+            health.maxHealth = 20;
+            health.currentHealth = 20;
+            spriteRenderer.sprite = boss2;
+        }
     }
 }
