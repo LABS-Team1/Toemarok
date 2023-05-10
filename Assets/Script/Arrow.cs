@@ -13,7 +13,8 @@ public class Arrow : MonoBehaviour
         transform.Translate(direction.normalized * speed * Time.deltaTime);
     }
 
-    private void OnBecameInvisible()    
+
+    private void OnBecameInvisible()
     {
         Destroy(gameObject);
     }
