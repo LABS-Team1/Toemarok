@@ -8,29 +8,33 @@ public class Monster : MonoBehaviour
     Rigidbody2D rb;
     SpriteRenderer spriteRenderer;
     public float detectionRadius; // 원의 반지름
-    public GameObject player; // 플레이어 레이어
     public float moveSpeed = 1.0f;
+
+    private GameObject[] players; // 플레이어 레이어
+    private GameObject target;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+
+        players = GameObject.FindGameObjectsWithTag("Player");
     }
 
     private void Update()
     {
-        // 플레이어와 몬스터의 거리 계산
-        float distance = Vector2.Distance(transform.position, player.transform.position);
+        target = FindNearestPlayer();
 
-        if (distance <= detectionRadius) // 플레이어가 원 안에 있을 때
+        
+        if (IsTargetDetected()) // 플레이어가 원 안에 있을 때
         {
 
             Flip();// player 가 몬스터보다 왼쪽에 잇으면 flipt
 
             // 플레이어를 추적
             transform.position = Vector3.MoveTowards
-                (transform.position, player.transform.position, moveSpeed * Time.deltaTime);
+                (transform.position, target.transform.position, moveSpeed * Time.deltaTime);
 
             animator.SetBool("TrackingPlayer", true);
         }
@@ -47,11 +51,43 @@ public class Monster : MonoBehaviour
         Gizmos.DrawSphere(transform.position, detectionRadius);
     }
 
-    void Flip()
+    private GameObject FindNearestPlayer()
     {
-        if (player.transform.position.x < transform.position.x) { // 플레이어가 왼쪽에 있을 경우 filp
+        float minDistance = 0.0f;
+        GameObject result = null;
+        foreach (var player in players)
+        {
+            float distance = Vector2.Distance(transform.position, player.transform.position);
+            if (distance < minDistance || result == null)
+            {
+                distance = minDistance;
+                result = player;
+            }
+        }
+        return result;
+    }
+
+    private void Flip()
+    {
+        if (target.transform.position.x < transform.position.x) { // 플레이어가 왼쪽에 있을 경우 filp
             spriteRenderer.flipX = true;
         }
         else spriteRenderer.flipX = false;
+    }
+
+    public GameObject GetTarget()
+    {
+        return target;
+    }
+
+    public bool IsTargetDetected()
+    {
+        if (target == null) return false;
+
+        // 플레이어와 몬스터의 거리 계산
+        float distance = Vector2.Distance(transform.position, target.transform.position);
+
+
+        return distance <= detectionRadius;
     }
 }

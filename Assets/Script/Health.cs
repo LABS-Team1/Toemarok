@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Health : MonoBehaviour
+public class Health : MonoBehaviour, ISubject
 {
     public int maxHealth = 5;
     public int currentHealth;
@@ -10,6 +10,7 @@ public class Health : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     public Color hitColor;
+    private List<IObserver> observers = new List<IObserver>();
 
     private void Start()
     {
@@ -34,6 +35,8 @@ public class Health : MonoBehaviour
             MoveBack();
             StartCoroutine(FlashSprite());
         }
+
+        NotifyObservers();
     }
 
     private void Die()
@@ -60,6 +63,24 @@ public class Health : MonoBehaviour
             yield return new WaitForSeconds(flashDuration / 2);
             GetComponent<SpriteRenderer>().color = originalColor;
             yield return new WaitForSeconds(flashDuration / 2);
+        }
+    }
+
+    public void ResisterObserver(IObserver observer)
+    {
+        observers.Add(observer);
+    }
+
+    public void RemoveObserver(IObserver observer)
+    {
+        observers.Remove(observer);
+    }
+
+    public void NotifyObservers()
+    {
+        foreach (var observer in observers)
+        {
+            observer.GetNotified();
         }
     }
 }

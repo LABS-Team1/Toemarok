@@ -175,7 +175,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectionRadius: 10
-  player: {fileID: 1933256002}
   moveSpeed: 0.5
 --- !u!50 &510783522
 Rigidbody2D:
@@ -328,7 +327,6 @@ MonoBehaviour:
   attacking: 0
   attackCooldown: 5
   remainingAttackCooldown: 0
-  player: {fileID: 1933256002}
   arrow: {fileID: 7738489829350749990, guid: db18c82d8b2134a458466e838f633ac8, type: 3}
   boss2: {fileID: 21300000, guid: 1431ea911ebfca74a9beb3506d8a4b49, type: 3}
 --- !u!1 &813984719
