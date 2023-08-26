@@ -11,11 +11,13 @@ public class Health : MonoBehaviour, ISubject
     private SpriteRenderer spriteRenderer;
     public Color hitColor;
     private List<IObserver> observers = new List<IObserver>();
+    private ItemDrop itemDrop;
 
     private void Start()
     {
         currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
+        itemDrop = GetComponent<ItemDrop>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
@@ -42,6 +44,7 @@ public class Health : MonoBehaviour, ISubject
     private void Die()
     {
         // 적을 죽이거나 플레이어가 죽었을 때 처리할 로직을 작성합니다.
+        itemDrop.DropItem();
         Destroy(gameObject);
     }
 

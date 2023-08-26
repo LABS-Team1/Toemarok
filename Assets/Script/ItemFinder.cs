@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Item : MonoBehaviour
+public class ItemFinder : MonoBehaviour
 {
     public GameObject sword;
     public GameObject gun;

@@ -886,6 +886,7 @@ GameObject:
   - component: {fileID: 1034219949}
   - component: {fileID: 1034219943}
   - component: {fileID: 1034219948}
+  - component: {fileID: 1034219950}
   m_Layer: 0
   m_Name: BlackSlim
   m_TagString: Untagged
@@ -906,7 +907,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectionRadius: 2
-  player: {fileID: 1583328973}
   moveSpeed: 0.5
 --- !u!95 &1034219944
 Animator:
@@ -1059,6 +1059,23 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1034219950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1034219942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2e7c8638fce73a41b0f1ba239e7b484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropProbability: 1
+  commonDropItems:
+  - {fileID: 11400000, guid: a2a6874ba8a1c08449d3f8f84c1cc8ea, type: 2}
+  rareDropItems: []
+  legendaryDropItems: []
 --- !u!1 &1083380976
 GameObject:
   m_ObjectHideFlags: 0
@@ -1488,6 +1505,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   testHP: 9
+  money: 0
 --- !u!4 &1693210142
 Transform:
   m_ObjectHideFlags: 0
@@ -1980,7 +1998,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5309647134177080072, guid: af1e55af9731f374297a009902e52c45, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 44.063904
+      value: 44.063965
       objectReference: {fileID: 0}
     - target: {fileID: 5309647134177080072, guid: af1e55af9731f374297a009902e52c45, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
